@@ -31,7 +31,8 @@ namespace SolaBid.WebApi.Controllers
         public async Task<List<VendorDto>> GetVendors()
         {
             var result = await new VendorLogic().GetVendorsForVendorMain(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)
-                , User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                , User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                User.FindFirst(ClaimTypes.System)?.Value);
             return result;
         }
 
@@ -64,7 +65,9 @@ namespace SolaBid.WebApi.Controllers
             var result = await new VendorLogic().GetVendorEditDatas(
                 await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value),
                 vendorId,
-                User.FindFirst(ClaimTypes.NameIdentifier)?.Value, host);
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                host,
+                User.FindFirst(ClaimTypes.System)?.Value);
             return result;
         }
 
@@ -99,22 +102,26 @@ namespace SolaBid.WebApi.Controllers
         [HttpGet]
         public async Task<VendorCreateSelectListItemsDto> GetVendorItemList()
         {
-            var result = new VendorLogic().GetVendorItems(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value));
+            var result = new VendorLogic().GetVendorItems(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value),
+             User.FindFirst(ClaimTypes.System)?.Value);
             return result;
         }
         [HttpGet("{currency}")]
         public async Task<List<KeyValueTextBoxingDto>> GetBankCodes(string currency)
         {
-            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetBankCode(currency);
+            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetBankCode(currency, await new SiteLogic().GetSiteName(User.FindFirst(ClaimTypes.System)?.Value));
             return result;
         }
 
 
         //Insert Datas From SiteLine
-        [HttpGet]
-        public void InsertVendorsFromSiteLine()
-        {
-            _ = new VendorLogic().InsertVendorsFromSiteLine("SOCARSL_APP", User.FindFirst(ClaimTypes.NameIdentifier)?.Value /*"409909b5-6594-4daa-bb0e-8bf214c03f0c" Anar m ID*/);
-        }
+        // [HttpGet]
+        // public async Task InsertVendorsFromSiteLine()
+        // {
+        //     _ = new VendorLogic().InsertVendorsFromSiteLine(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value),
+        //      User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+        //      User.FindFirst(ClaimTypes.System)?.Value
+        //     );
+        // }
     }
 }

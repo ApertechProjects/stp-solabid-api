@@ -158,7 +158,7 @@ namespace SolaBid.Business.Logics
                     {
                         foreach (var requestItem in bidReferance.RequestItems)
                         {
-                            requestItem.UniqueCurrencyUnitPrice = new SiteLineDbLogic(bidReferance.Site.SiteDatabase).GetCurrencyConvertingAZN(bidReferance.Currency, requestItem.UnitPrice, bidReferance.ComparisonDate.ToString("dd.MM.yyyy"))._USD;
+                            requestItem.UniqueCurrencyUnitPrice = new SiteLineDbLogic(bidReferance.Site.SiteDatabase).GetCurrencyConvertingAZN(bidReferance.Currency, requestItem.UnitPrice, bidReferance.ComparisonDate.ToString("dd.MM.yyyy"), bidReferance.Site.SiteName)._USD;
                         }
                     }
                     context.BIDReferances.UpdateRange(biDReferances);
@@ -224,11 +224,11 @@ namespace SolaBid.Business.Logics
                 Vendors = await new VendorLogic().GetVendors(),
                 VendorKeyValues = await new VendorLogic().GetVendorsKeyValue(),
                 DiscountTypes = await new DiscountTypeLogic().GetDiscountTypesAsKVP(),
-                DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms(),
-                PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms(),
+                DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms(siteName),
+                PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms(siteName),
                 Statuses = await GetStatuses(),
                 Wons = await GetWons(),
-                Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency(),
+                Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency(siteName),
                 BIDRequestItems = new SiteLineDbLogic(siteDatabase).GetRequestLines(siteName, requestNumber, statusId == (int)Statuses.Closed ? 1 : 0),
                 ApprovalStatuses = await GetApproveStatuses(),
             };
@@ -367,7 +367,7 @@ namespace SolaBid.Business.Logics
                                 entityReferanceItem.Conv = bidReferanceItem.Conv;
                                 entityReferanceItem.ConvQuantity = bidReferanceItem.ConvQuantity;
                                 entityReferanceItem.ConvUnitPrice = bidReferanceItem.ConvUnitPrice;
-                                entityReferanceItem.UniqueCurrencyUnitPrice = new SiteLineDbLogic(entityBidReferance.Site.SiteDatabase).GetCurrencyConvertingAZN(entityBidReferance.Currency, bidReferanceItem.UnitPrice, entityBidReferance.ComparisonDate.ToString("dd.MM.yyyy"))._USD;
+                                entityReferanceItem.UniqueCurrencyUnitPrice = new SiteLineDbLogic(entityBidReferance.Site.SiteDatabase).GetCurrencyConvertingAZN(entityBidReferance.Currency, bidReferanceItem.UnitPrice, entityBidReferance.ComparisonDate.ToString("dd.MM.yyyy"), entityBidReferance.Site.SiteName)._USD;
                             }
                         }
                     }
@@ -525,7 +525,7 @@ namespace SolaBid.Business.Logics
                                         Conv = reqItem.Conv,
                                         ConvQuantity = reqItem.ConvQuantity,
                                         ConvUnitPrice = reqItem.ConvUnitPrice,
-                                        UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"))._USD
+                                        UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName)._USD
                                     });
                             }
                         if (newBid.SendedAttachments != null)
@@ -663,7 +663,7 @@ namespace SolaBid.Business.Logics
                                         Conv = reqItem.Conv,
                                         ConvQuantity = reqItem.ConvQuantity,
                                         ConvUnitPrice = reqItem.ConvUnitPrice,
-                                        UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"))._USD
+                                        UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName)._USD
                                     });
                                 }
 
@@ -790,7 +790,7 @@ namespace SolaBid.Business.Logics
                                 Conv = reqItem.Conv,
                                 ConvQuantity = reqItem.ConvQuantity,
                                 ConvUnitPrice = reqItem.ConvUnitPrice,
-                                UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"))._USD
+                                UniqueCurrencyUnitPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(newBidReference.Currency, reqItem.UnitPrice, newBidReference.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName)._USD
                             });
                         }
                     if (newBid.SendedAttachments != null)

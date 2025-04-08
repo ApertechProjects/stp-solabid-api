@@ -1881,7 +1881,7 @@ namespace SolaBid.Business.Logics
 
                 if (approvedChart.Stage == approveStages) //Complated Stage Approve
                 {
-                    var convertedValute = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN("USD", Convert.ToDecimal(approveDataModel.ApprovalStageTotalPrice), _firstBidRef.ComparisonDate.ToString("dd.MM.yyyy"));
+                    var convertedValute = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN("USD", Convert.ToDecimal(approveDataModel.ApprovalStageTotalPrice), _firstBidRef.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName);
                     approvedChart.WonnedLineTotalAZN = convertedValute.AZN;
                     approvedChart.WonnedLineTotalUSD = convertedValute.USD;
                     approvedChart.Stage = 99;
@@ -2250,11 +2250,11 @@ namespace SolaBid.Business.Logics
 
             foreach (var wonnedBid in wonnedBids)
             {
-                result.Discount = (new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedBid.BIDReferance.DiscountValue, wonnedBid.BIDReferance.ComparisonDate.ToString("dd.MM.yyyy")))._USD;
+                result.Discount = (new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedBid.BIDReferance.DiscountValue, wonnedBid.BIDReferance.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName))._USD;
                 foreach (var wonnedLine in wonnedBid.BidItems)
                 {
-                    var convertedDiscountPrice = wonnedBid.BIDReferance.DiscountTypeId > 1 ? 0 : (new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedLine.Discount))._USD;
-                    var convertedTotalPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedLine.TotalPrice, wonnedBid.BIDReferance.ComparisonDate.ToString("dd.MM.yyyy"));
+                    var convertedDiscountPrice = wonnedBid.BIDReferance.DiscountTypeId > 1 ? 0 : (new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedLine.Discount, DateTime.Now.ToString(), site.SiteName))._USD;
+                    var convertedTotalPrice = new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(wonnedBid.BIDReferance.Currency, wonnedLine.TotalPrice, wonnedBid.BIDReferance.ComparisonDate.ToString("dd.MM.yyyy"), site.SiteName);
                     result.TotalAzn = result.TotalAzn + convertedTotalPrice._AZN;
                     result.TotalUsd = result.TotalUsd + convertedTotalPrice._USD;
                     result.Discount = result.Discount + convertedDiscountPrice;

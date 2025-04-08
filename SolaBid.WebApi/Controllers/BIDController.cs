@@ -76,21 +76,24 @@ namespace SolaBid.WebApi.Controllers
         [HttpGet("{currency}/{value}/{date}")]
         public async Task<ValConvertorDto> GetConvertedDatas(string currency, decimal value, string date)
         {
-            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetCurrencyConvertingAZN(currency, value, date);
+            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetCurrencyConvertingAZN(currency, value, date,
+            await new SiteLogic().GetSiteName(User.FindFirst(ClaimTypes.System)?.Value));
             return result;
         }
 
         [HttpGet("{currency}/{value}")]
         public async Task<ValConvertorDto> GetConvertedDatas(string currency, decimal value)
         {
-            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetCurrencyConvertingAZN(currency, value, null);
+            var result = new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).GetCurrencyConvertingAZN(currency, value, DateTime.Now.ToString(),await new SiteLogic().GetSiteName(User.FindFirst(ClaimTypes.System)?.Value));
             return result;
         }
 
         [HttpGet]
         public async Task<bool> CheckValutaIsFilled()
         {
-            return new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).CheckValutaIsFilled();
+            return new SiteLineDbLogic(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value)).CheckValutaIsFilled(
+                await new SiteLogic().GetSiteName(User.FindFirst(ClaimTypes.System)?.Value)
+            );
         }
 
         //GET METHODS END

@@ -236,8 +236,8 @@ namespace SolaBid.Business.Logics
                             }
                             else
                             {
-                                var convertedTotalPrice = discountedTotalPrice == 0 ? new ValConvertorDto() : new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(currency, discountedTotalPrice, wonnedBidRef.ComparisonDate.ToString("dd-MM-yyyy"));
-                                var convertedDiscount = discount == 0 ? new ValConvertorDto() : new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(currency, discount, wonnedBidRef.ComparisonDate.ToString("dd-MM-yyyy"));
+                                var convertedTotalPrice = discountedTotalPrice == 0 ? new ValConvertorDto() : new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(currency, discountedTotalPrice, wonnedBidRef.ComparisonDate.ToString("dd-MM-yyyy"), site.SiteName);
+                                var convertedDiscount = discount == 0 ? new ValConvertorDto() : new SiteLineDbLogic(site.SiteDatabase).GetCurrencyConvertingAZN(currency, discount, wonnedBidRef.ComparisonDate.ToString("dd-MM-yyyy"), site.SiteName);
                                 SetDiscountTotalValues(result, wonnedComp.ComparisonChartPrepared, Convert.ToDecimal(convertedTotalPrice.USD), Convert.ToDecimal(convertedDiscount.USD));
                             }
                         }

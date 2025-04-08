@@ -121,7 +121,8 @@ namespace SolaBid.Business.Logics
             try
             {
                 var siteDatabase = await new SiteLogic().GetSiteDatabase(siteId);
-                var siteLineVendorCodes = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes();
+                var siteName = await new SiteLogic().GetSiteDatabase(siteId);
+                var siteLineVendorCodes = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes(siteName);
                 var vendors = await new VendorLogic().GetVendorsByIds(wonnedVendorIds);
                 using (SqlConnection sqlConn = TransactionConfig.AppDbContextManualConnection)
                 {
@@ -133,7 +134,7 @@ namespace SolaBid.Business.Logics
                             using (SqlCommand sqlCmd = new SqlCommand(sql, sqlConn))
                             {
                                 sqlCmd.CommandType = CommandType.StoredProcedure;
-                                sqlCmd.Parameters.AddWithValue("@site_ref", siteDatabase == "QQZ" ? "QQZ" : "SOCARSTP");
+                                sqlCmd.Parameters.AddWithValue("@site_ref", siteName);
                                 sqlCmd.Parameters.AddWithValue("@VendorId", vendor.Id);
                                 sqlConn.Open();
                                 _ = await sqlCmd.ExecuteNonQueryAsync();
@@ -241,10 +242,10 @@ namespace SolaBid.Business.Logics
         }
 
 
-        public async Task<VendorEditDto> GetVendorEditDatas(string siteDatabase, int vendorId, string userId, string host)
+        public async Task<VendorEditDto> GetVendorEditDatas(string siteDatabase, int vendorId, string userId, string host, string siteName)
         {
             var vendorDatas = new VendorEditDto();
-            var siteLineVendorIds = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes();
+            var siteLineVendorIds = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes(siteName);
             vendorDatas.userCanEditVendorWithSiteLine = await new AdditionalPrivilegeLogic().UserCanEditVendorWithSiteLine(userId);
 
             using (var context = TransactionConfig.AppDbContext)
@@ -253,7 +254,7 @@ namespace SolaBid.Business.Logics
                 if (vendorEntity == null)
                     return null;
                 vendorDatas = TransactionConfig.Mapper.Map<VendorEditDto>(vendorEntity);
-                GetVendorEditItems(siteDatabase, vendorDatas);
+                GetVendorEditItems(siteDatabase, vendorDatas, siteName);
                 vendorDatas.CreatedBy = await GetUserFullName(vendorDatas.CreatedBy);
                 vendorDatas.LastUpdateBy = await GetUserFullName(vendorDatas.LastUpdateBy);
                 vendorDatas.HasSiteLine = siteLineVendorIds.Any(m => m == vendorEntity.VendorCode);
@@ -280,10 +281,10 @@ namespace SolaBid.Business.Logics
                 return userEntity == null ? " " : userEntity.FirstName + " " + userEntity.LastName;
             }
         }
-        public async Task<List<VendorDto>> GetVendorsForVendorMain(string siteDatabase, string userId)
+        public async Task<List<VendorDto>> GetVendorsForVendorMain(string siteDatabase, string userId, string siteName)
         {
             var result = await GetVendors();
-            var siteLineVendorIds = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes();
+            var siteLineVendorIds = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes(siteName);
             var userCanEditVendorWithSiteLine = await new AdditionalPrivilegeLogic().UserCanEditVendorWithSiteLine(userId);
 
             var vendorsBIDReferanced = await GetBIDReferansedVendors();
@@ -358,26 +359,26 @@ namespace SolaBid.Business.Logics
             return generetedCode;
         }
 
-        public VendorCreateSelectListItemsDto GetVendorItems(string siteDatabase)
+        public VendorCreateSelectListItemsDto GetVendorItems(string siteDatabase, string siteName)
         {
             return new VendorCreateSelectListItemsDto
             {
-                Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency(),
-                Countries = new SiteLineDbLogic(siteDatabase).GetCountries(),
-                TaxCodes = new SiteLineDbLogic(siteDatabase).GetTaxCode(),
-                DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms(),
-                PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms()
+                Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency(siteName),
+                Countries = new SiteLineDbLogic(siteDatabase).GetCountries(siteName),
+                TaxCodes = new SiteLineDbLogic(siteDatabase).GetTaxCode(siteName),
+                DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms(siteName),
+                PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms(siteName)
             };
         }
 
-        public void GetVendorEditItems(string siteDatabase, VendorEditDto fillVendor)
+        public void GetVendorEditItems(string siteDatabase, VendorEditDto fillVendor, string siteName)
         {
-            fillVendor.Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency();
-            fillVendor.Countries = new SiteLineDbLogic(siteDatabase).GetCountries();
-            fillVendor.TaxCodes = new SiteLineDbLogic(siteDatabase).GetTaxCode();
-            fillVendor.DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms();
-            fillVendor.PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms();
-            fillVendor.BankCodes = new SiteLineDbLogic(siteDatabase).GetBankCode(fillVendor.Currency);
+            fillVendor.Currencies = new SiteLineDbLogic(siteDatabase).GetCurrency(siteName);
+            fillVendor.Countries = new SiteLineDbLogic(siteDatabase).GetCountries(siteName);
+            fillVendor.TaxCodes = new SiteLineDbLogic(siteDatabase).GetTaxCode(siteName);
+            fillVendor.DeliveryTerms = new SiteLineDbLogic(siteDatabase).GetDeliveryTerms(siteName);
+            fillVendor.PaymentTerms = new SiteLineDbLogic(siteDatabase).GetPaymentTerms(siteName);
+            fillVendor.BankCodes = new SiteLineDbLogic(siteDatabase).GetBankCode(fillVendor.Currency, siteName);
         }
 
         public async Task<ApiResult> Create(VendorDto vendorDto, string userId, string root)
@@ -495,12 +496,12 @@ namespace SolaBid.Business.Logics
                 return false;
             }
         }
-        public async Task<ApiResult> InsertVendorsFromSiteLine(string siteDatabase, string userId)
+        public async Task<ApiResult> InsertVendorsFromSiteLine(string siteDatabase, string userId, string siteName)
         {
             var apiResult = new ApiResult();
             try
             {
-                var siteLineVendors = TransactionConfig.Mapper.Map<List<Vendor>>(new SiteLineDbLogic(siteDatabase).GetSiteLineVendors(userId));
+                var siteLineVendors = TransactionConfig.Mapper.Map<List<Vendor>>(new SiteLineDbLogic(siteDatabase).GetSiteLineVendors(userId, siteName));
                 if (siteLineVendors.Count > 0)
                 {
                     using (var context = TransactionConfig.AppDbContext)

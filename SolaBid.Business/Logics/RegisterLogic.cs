@@ -752,7 +752,7 @@ namespace SolaBid.Business.Logics
         {
             var Buyers = TransactionConfig.Mapper.Map<List<KeyValueTextBoxingDto>>(new SiteLineDbLogic(site.SiteDatabase).GetBuyers());
             var Companies = await new SiteLogic().GetSites();
-            var Currencies = new SiteLineDbLogic(site.SiteDatabase).GetCurrency();
+            var Currencies = new SiteLineDbLogic(site.SiteDatabase).GetCurrency(site.SiteName);
             var Statuses = await new StatusLogic().GetStatusesAsKeyValue();
             //var Requesters = new SiteLineDbLogic(site.SiteDatabase).GetRequestersAsKeyValue();
 

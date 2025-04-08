@@ -35,10 +35,10 @@ namespace SolaBid.Business.Logics
             return buyerDtoList;
         }
 
-        public List<KeyValueTextBoxingDto> GetCountries()
+        public List<KeyValueTextBoxingDto> GetCountries(string siteName)
         {
             var countryList = new List<KeyValueTextBoxingDto>();
-            var countryTable = FromQuery("SELECT country FROM country_mst");
+            var countryTable = FromQuery($"SELECT country FROM country_mst = '{siteName}'");
             for (int i = 0; i < countryTable.Rows.Count; i++)
             {
                 countryList.Add(new KeyValueTextBoxingDto
@@ -51,10 +51,10 @@ namespace SolaBid.Business.Logics
             return countryList;
         }
 
-        public List<KeyValueTextBoxingDto> GetDeliveryTerms()
+        public List<KeyValueTextBoxingDto> GetDeliveryTerms(string siteName)
         {
             var delTermList = new List<KeyValueTextBoxingDto>();
-            var delTermTable = FromQuery("SELECT delterm,description FROM del_term_mst");
+            var delTermTable = FromQuery($"SELECT delterm,description FROM del_term_mst where site_ref = '{siteName}'");
             for (int i = 0; i < delTermTable.Rows.Count; i++)
             {
                 var rowData = delTermTable.Rows[i];
@@ -68,10 +68,10 @@ namespace SolaBid.Business.Logics
             return delTermList;
         }
 
-        public List<KeyValueTextBoxingDto> GetPaymentTerms()
+        public List<KeyValueTextBoxingDto> GetPaymentTerms(string siteName)
         {
             var payTermList = new List<KeyValueTextBoxingDto>();
-            var payTermTable = FromQuery("SELECT terms_code,description FROM terms_mst");
+            var payTermTable = FromQuery($"SELECT terms_code,description FROM terms_mst where site_ref = '{siteName}'");
             for (int i = 0; i < payTermTable.Rows.Count; i++)
             {
                 var rowData = payTermTable.Rows[i];
@@ -85,10 +85,10 @@ namespace SolaBid.Business.Logics
             return payTermList;
         }
 
-        public List<KeyValueTextBoxingForUOMDto> Get_UOM_Items(string rowPointer, string UOM)
+        public List<KeyValueTextBoxingForUOMDto> Get_UOM_Items(string rowPointer, string UOM, string siteName)
         {
             var payTermList = new List<KeyValueTextBoxingForUOMDto>();
-            var payTermTable = FromQuery($"Exec dbo.SP_ITEM_UOM @RowPointer = '{rowPointer}',@from_uom ='{UOM}'", false);
+            var payTermTable = FromQuery($"Exec dbo.SP_ITEM_UOM @RowPointer = '{rowPointer}',@from_uom ='{UOM}', @warehouse = '{siteName}'", false);
             for (int i = 0; i < payTermTable.Rows.Count; i++)
             {
                 var rowData = payTermTable.Rows[i];
@@ -103,17 +103,17 @@ namespace SolaBid.Business.Logics
             return payTermList;
         }
 
-        public bool CheckValutaIsFilled()
+        public bool CheckValutaIsFilled(string siteName)
         {
-            var valuta = GetCurrencyConvertingAZN("AZN", 10);
+            var valuta = GetCurrencyConvertingAZN("AZN", 10, default, siteName);
             var res = valuta._USD != 0;
             return res;
         }
 
-        public List<KeyValueTextBoxingDto> GetTaxCode()
+        public List<KeyValueTextBoxingDto> GetTaxCode(string siteName)
         {
             var taxCodeList = new List<KeyValueTextBoxingDto>();
-            var taxCodeTable = FromQuery("SELECT tm.tax_code,tm.description FROM taxcode_mst tm");
+            var taxCodeTable = FromQuery($"SELECT tm.tax_code,tm.description FROM taxcode_mst tm where site_ref = '{siteName}'");
             for (int i = 0; i < taxCodeTable.Rows.Count; i++)
             {
                 var rowData = taxCodeTable.Rows[i];
@@ -127,10 +127,10 @@ namespace SolaBid.Business.Logics
             return taxCodeList;
         }
 
-        public List<KeyValueTextBoxingDto> GetCurrency()
+        public List<KeyValueTextBoxingDto> GetCurrency(string siteName)
         {
             var currencyList = new List<KeyValueTextBoxingDto>();
-            var currencyTable = FromQuery("SELECT curr_code FROM currency_mst");
+            var currencyTable = FromQuery($"SELECT curr_code FROM currency_mst where site_ref = '{siteName}'");
             for (int i = 0; i < currencyTable.Rows.Count; i++)
             {
                 var rowData = currencyTable.Rows[i];
@@ -144,10 +144,10 @@ namespace SolaBid.Business.Logics
             return currencyList;
         }
 
-        public List<KeyValueTextBoxingDto> GetBankCode(string currency)
+        public List<KeyValueTextBoxingDto> GetBankCode(string currency, string siteName)
         {
             var bankCodeList = new List<KeyValueTextBoxingDto>();
-            var bankCodeTable = FromQuery($"Select bank_code from bank_hdr_mst where curr_code = '{currency}'");
+            var bankCodeTable = FromQuery($"Select bank_code from bank_hdr_mst where curr_code = '{currency}' and site_ref = '{siteName}'");
             for (int i = 0; i < bankCodeTable.Rows.Count; i++)
             {
                 var rowData = bankCodeTable.Rows[i];
@@ -206,14 +206,16 @@ namespace SolaBid.Business.Logics
             List<WarehouseDto> warehouseDtos = new List<WarehouseDto>();
             DataTable warehouseTable = new DataTable();
 
-            if (siteName.Contains("QQZ"))
-            {
-                warehouseTable = FromQuery("SELECT whse AS Warehouse, name AS Name FROM dbo.whse_mst WHERE whse LIKE N'QQZ%'");
-            }
-            else
-            {
-                warehouseTable = FromQuery("SELECT whse AS Warehouse, name AS Name FROM dbo.whse_mst WHERE whse NOT LIKE N'QQZ%'");
-            }
+            warehouseTable = FromQuery($"SELECT whse AS Warehouse, name AS Name FROM dbo.whse_mst WHERE site_ref = '{siteName}'");
+
+            // if (siteName.Contains("QQZ"))
+            // {
+            //     warehouseTable = FromQuery("SELECT whse AS Warehouse, name AS Name FROM dbo.whse_mst WHERE whse LIKE N'QQZ%'");
+            // }
+            // else
+            // {
+            //     warehouseTable = FromQuery("SELECT whse AS Warehouse, name AS Name FROM dbo.whse_mst WHERE whse NOT LIKE N'QQZ%'");
+            // }
 
             for (int i = 0; i < warehouseTable.Rows.Count; i++)
             {
@@ -229,9 +231,9 @@ namespace SolaBid.Business.Logics
             return warehouseDtos;
         }
 
-        public List<VendorDto> GetSiteLineVendors(string userId)
+        public List<VendorDto> GetSiteLineVendors(string userId, string siteName)
         {
-            string query = "select vd.vend_num, va.name,vd.UfVendorsBlackList, va.addr##1 ,va.addr##2,va.addr##3,vd.contact, vd.phone, va.external_email_addr, va.country,vd.tax_reg_num1, tax_code1, vd.delterm,vd.terms_code, vd.curr_code, vd.bank_code from vendor_mst vd inner join vendaddr_mst va on vd.vend_num = va.vend_num";
+            string query = $"select vd.vend_num, va.name,vd.UfVendorsBlackList, va.addr##1 ,va.addr##2,va.addr##3,vd.contact, vd.phone, va.external_email_addr, va.country,vd.tax_reg_num1, tax_code1, vd.delterm,vd.terms_code, vd.curr_code, vd.bank_code from vendor_mst vd inner join vendaddr_mst va on vd.vend_num = va.vend_num and vd.site_ref=va.site_ref where vd.site_ref='{siteName}'";
             var siteLineVendors = new List<VendorDto>();
             var siteLineVendorTable = FromQuery(query);
 
@@ -263,9 +265,9 @@ namespace SolaBid.Business.Logics
             return siteLineVendors;
         }
 
-        public List<string> GetSiteLineVendorCodes()
+        public List<string> GetSiteLineVendorCodes(string siteName)
         {
-            string query = "EXEC dbo.SP_VendorList";
+            string query = $"EXEC dbo.SP_VendorList '{siteName}'";
             var siteLineVendorCodes = new List<string>();
             var siteLineVendorTable = FromQuery(query);
 
@@ -280,7 +282,7 @@ namespace SolaBid.Business.Logics
         public List<string> GetRequestNumbers(string siteName, string userId)
         {
             var numberList = new List<string>();
-            DataTable requestNumberTable = FromQuery($"Exec dbo.SP_RequestsBySite @UserId = '{userId}',@BU='SOCARSTP'", false);
+            DataTable requestNumberTable = FromQuery($"Exec dbo.SP_RequestsBySite @UserId = '{userId}',@BU='{siteName}'", false);
             for (int i = 0; i < requestNumberTable.Rows.Count; i++)
             {
                 numberList.Add(requestNumberTable.Rows[i].Field<string>("req_num"));
@@ -288,11 +290,11 @@ namespace SolaBid.Business.Logics
             return numberList;
         }
 
-        public string GetPONumberByBIDReference(string bidReference)
+        public string GetPONumberByBIDReference(string bidReference, string siteName)
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            resultTable = FromQuery($"Select po_num from po_mst where UfBIDReference = '{bidReference}'");
+            resultTable = FromQuery($"Select po_num from po_mst where site_ref= '{siteName}' AND UfBIDReference = '{bidReference}'");
             result = resultTable.Rows[0][0].ToString();
             return result;
         }
@@ -300,14 +302,15 @@ namespace SolaBid.Business.Logics
         public string GetRequester(string siteName, string reqNumber)
         {
             var resultTable = new DataTable();
-            if (siteName.Contains("QQZ"))
-            {
-                resultTable = FromQuery($"Select requester from preq_mst WHERE req_num= '{reqNumber}' AND whse LIKE N'QQZ%'");
-            }
-            else
-            {
-                resultTable = FromQuery($"Select requester from preq_mst WHERE req_num= '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
-            }
+             resultTable = FromQuery($"Select requester from preq_mst WHERE req_num= '{reqNumber} and site_ref = '{siteName}'");
+            // if (siteName.Contains("QQZ"))
+            // {
+            //     resultTable = FromQuery($"Select requester from preq_mst WHERE req_num= '{reqNumber}' AND whse LIKE N'QQZ%'");
+            // }
+            // else
+            // {
+            //     resultTable = FromQuery($"Select requester from preq_mst WHERE req_num= '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
+            // }
             try
             {
                 return resultTable.Rows[0][0].ToString();
@@ -318,9 +321,9 @@ namespace SolaBid.Business.Logics
             }
         }
 
-        public List<KeyValueTextBoxingDto> GetRequestersAsKeyValue()
+        public List<KeyValueTextBoxingDto> GetRequestersAsKeyValue(string siteName)
         {
-            var resultTable = FromQuery("SELECT distinct requester from preq_mst WHERE  whse NOT LIKE N'QQZ%' AND requester IS NOT NULL");
+            var resultTable = FromQuery($"SELECT distinct requester from preq_mst WHERE requester IS NOT NULL AND site_ref='{siteName}'");
             return resultTable.AsEnumerable().Select(m => new KeyValueTextBoxingDto
             {
                 Key = m.Field<string>("requester"),
@@ -333,14 +336,15 @@ namespace SolaBid.Business.Logics
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            if (siteName.Contains("QQZ"))
-            {
-                resultTable = FromQuery($"Select req_date from preq_mst WHERE req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
-            }
-            else
-            {
-                resultTable = FromQuery($"Select req_date from preq_mst WHERE req_num = '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
-            }
+            resultTable = FromQuery($"Select req_date from preq_mst WHERE req_num = '{reqNumber}' AND site_ref='{siteName}'");
+            // if (siteName.Contains("QQZ"))
+            // {
+            //     resultTable = FromQuery($"Select req_date from preq_mst WHERE req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
+            // }
+            // else
+            // {
+            //     resultTable = FromQuery($"Select req_date from preq_mst WHERE req_num = '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
+            // }
             try
             {
                 result = resultTable.Rows[0][0].ToString();
@@ -357,14 +361,15 @@ namespace SolaBid.Business.Logics
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            if (siteName.Contains("QQZ"))
-            {
-                resultTable = FromQuery($"SELECT DISTINCT CASE WHEN REF_TYPE = 'I' THEN 'Inventory' WHEN REF_TYPE = 'J' THEN 'JOB' + ' - ' + ref_num WHEN REF_TYPE = 'O' THEN 'ORDER' + ' - ' + ref_num END Destination FROM preqitem_mst pm WHERE req_num = '{reqNumber}' AND whse = 'QQZ'");
-            }
-            else
-            {
-                resultTable = FromQuery($"SELECT DISTINCT CASE WHEN REF_TYPE = 'I' THEN 'Inventory' WHEN REF_TYPE = 'J' THEN 'JOB' + ' - ' + ref_num WHEN REF_TYPE = 'O' THEN 'ORDER' + ' - ' + ref_num END Destination FROM preqitem_mst pm WHERE req_num = '{reqNumber}' AND whse <> 'QQZ'");
-            }
+            resultTable = FromQuery($"SELECT DISTINCT CASE WHEN REF_TYPE = 'I' THEN 'Inventory' WHEN REF_TYPE = 'J' THEN 'JOB' + ' - ' + ref_num WHEN REF_TYPE = 'O' THEN 'ORDER' + ' - ' + ref_num END Destination FROM preqitem_mst pm WHERE req_num = '{reqNumber}' AND pm.site_ref='{siteName}'");
+            
+            // if (siteName.Contains("QQZ"))
+            // {
+            // }
+            // else
+            // {
+            //     resultTable = FromQuery($"SELECT DISTINCT CASE WHEN REF_TYPE = 'I' THEN 'Inventory' WHEN REF_TYPE = 'J' THEN 'JOB' + ' - ' + ref_num WHEN REF_TYPE = 'O' THEN 'ORDER' + ' - ' + ref_num END Destination FROM preqitem_mst pm WHERE req_num = '{reqNumber}' AND whse <> 'QQZ'");
+            // }
             try
             {
                 result = resultTable.Rows[0][0].ToString();
@@ -383,7 +388,7 @@ namespace SolaBid.Business.Logics
             if (destination.ToLower().Contains("job"))
             {
 
-                resultTable = FromQuery($"SELECT TOP 1 cm.co_num FROM co_mst cm WHERE cm.est_num='{destination.Split("-")[1].Trim()}'");
+                resultTable = FromQuery($"SELECT TOP 1 cm.co_num FROM co_mst cm WHERE cm.site_ref='{siteName}' AND cm.est_num='{destination.Split("-")[1].Trim()}'");
             }
             else
             {
@@ -416,7 +421,7 @@ namespace SolaBid.Business.Logics
                     Quantity = m["Quantity"] == DBNull.Value ? 0 : m.Field<decimal>("Quantity"),
                     RequestLine = m["req_line"] == DBNull.Value ? short.Parse("0") : m.Field<Int16>("req_line"),
                     UOM = m.Field<string>("UOM"),
-                    UOMItems = Get_UOM_Items(m.Field<Guid>("RowPointer").ToString(), m.Field<string>("UOM"))
+                    UOMItems = Get_UOM_Items(m.Field<Guid>("RowPointer").ToString(), m.Field<string>("UOM"), siteName)
                 }).ToList();
 
                 for (int i = 0; i < resultList.Count; i++)
@@ -436,7 +441,7 @@ namespace SolaBid.Business.Logics
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}' and site_ref = '{siteName}') and site_ref = '{siteName}' )  from preq_mst where req_num = '{reqNumber}' AND whse not LIKE N'QQZ%'");
+            resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}' and site_ref = '{siteName}') and site_ref = '{siteName}' )  from preq_mst where req_num = '{reqNumber}'");
             // if (siteName.Contains("QQZ"))
             // {
             //     resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
@@ -457,7 +462,7 @@ namespace SolaBid.Business.Logics
 
         }
 
-        public ValConvertorDto GetCurrencyConvertingAZN(string currency, decimal value, string date = default)
+        public ValConvertorDto GetCurrencyConvertingAZN(string currency, decimal value, string date, string siteName)
         {
             var result = new ValConvertorDto();
             if (string.IsNullOrEmpty(currency))
@@ -473,7 +478,7 @@ namespace SolaBid.Business.Logics
                 }
                 else
                 {
-                    var resultTableAZN = FromQuery($"SELECT dbo.SF_DailyRate ('{formattedDate}','{currency}')");
+                    var resultTableAZN = FromQuery($"SELECT dbo.SF_DailyRate ('{formattedDate}','{currency}', '{siteName}')");
                     var gettedDataAZN = resultTableAZN.Rows[0][0].ToString();
                     var convertedValueAZN = decimal.Parse(gettedDataAZN);
 
@@ -484,7 +489,7 @@ namespace SolaBid.Business.Logics
                 }
 
 
-                var resultTableUSD = FromQuery($"SELECT dbo.SF_DailyRate ('{formattedDate}','USD')");
+                var resultTableUSD = FromQuery($"SELECT dbo.SF_DailyRate ('{formattedDate}','USD', '{siteName}')");
                 var gettedDataUSD = resultTableUSD.Rows[0][0].ToString();
                 var convertedValueUSD = decimal.Parse(gettedDataUSD);
                 result._USD = result._AZN / convertedValueUSD;
