@@ -436,7 +436,7 @@ namespace SolaBid.Business.Logics
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}' and site_ref = '{siteName}') and site_ref = '{siteName}' )  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
+            resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}' and site_ref = '{siteName}') and site_ref = '{siteName}' )  from preq_mst where req_num = '{reqNumber}' AND whse not LIKE N'QQZ%'");
             // if (siteName.Contains("QQZ"))
             // {
             //     resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
