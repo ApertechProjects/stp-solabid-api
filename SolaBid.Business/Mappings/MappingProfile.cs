@@ -91,11 +91,11 @@ namespace SolaBid.Business.Mappings
             CreateMap<Site, SiteDto>().ReverseMap();
             CreateMap<ComparisonChart, ComparisonChartDto>().ReverseMap();
             CreateMap<DiscountType, DiscountTypeDto>().ReverseMap();
-            CreateMap<SiteDto, SiteDto>().ReverseMap().ForMember(x => x.GroupSiteWarehouses, opt => opt.Ignore());
+            // CreateMap<SiteDto, SiteDto>().ReverseMap().ForMember(x => x.GroupSiteWarehouses, opt => opt.Ignore());
             CreateMap<AdditionalPrivilege, AdditionalPrivilegeDto>().ReverseMap();
             CreateMap<Vendor, VendorDto>().ForMember(m=>m.hasAttachment,op=>op.MapFrom(mf=>mf.VendorAttachments.Count>0)).ReverseMap();
             CreateMap<VendorAttachment, VendorAttachmentDto>().ReverseMap();
-            CreateMap<VendorDto, VendorDto>().ReverseMap().ForMember(m=>m.BIDReferances,op=>op.Ignore());
+            // CreateMap<VendorDto, VendorDto>().ReverseMap().ForMember(m=>m.BIDReferances,op=>op.Ignore());
             CreateMap<VendorEditDto, Vendor>().ReverseMap();
             CreateMap<BIDRequestDto, BIDRequest>().ReverseMap();
             CreateMap<BIDRequestDto, BIDRequestDto>().ReverseMap().ForMember(m=>m.BIDComparisons,op=>op.Ignore());
@@ -104,9 +104,9 @@ namespace SolaBid.Business.Mappings
             CreateMap<BIDComparisonDto, BIDComparisonDto>().ReverseMap().ForMember(m => m.BIDReferances, op => op.Ignore()) ;
             CreateMap<RELComparisonRequestItemDto, RELComparisonRequestItem>().ReverseMap();
             CreateMap<StatusDto, Status>().ReverseMap();
-            CreateMap<StatusDto, StatusDto>().ReverseMap().ForMember(x => x.BIDReferances, opt => opt.Ignore());
+            // CreateMap<StatusDto, StatusDto>().ReverseMap().ForMember(x => x.BIDReferances, opt => opt.Ignore());
             CreateMap< WonStatusDto, WonStatus>().ReverseMap();
-            CreateMap<WonStatusDto, WonStatusDto>().ReverseMap().ForMember(x => x.BIDReferances, opt => opt.Ignore());
+            // CreateMap<WonStatusDto, WonStatusDto>().ReverseMap().ForMember(x => x.BIDReferances, opt => opt.Ignore());
             CreateMap<RELComparisonRequestItemDto, RELComparisonRequestItemDto>().ReverseMap().ForMember(x => x.BIDReferance, opt => opt.Ignore());
             CreateMap<BIDAttachmentDto, BIDAttachment>().ReverseMap();
             CreateMap<BIDAttachmentDto, BIDAttachmentDto>().ReverseMap().ForMember(x => x.BIDReferance, opt => opt.Ignore());

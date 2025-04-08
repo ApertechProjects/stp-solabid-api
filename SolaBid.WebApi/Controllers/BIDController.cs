@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SolaBid.Business.ActionFilters;
 using SolaBid.Business.Dtos.ApiDtos;
 using SolaBid.Business.Dtos.EntityDtos;

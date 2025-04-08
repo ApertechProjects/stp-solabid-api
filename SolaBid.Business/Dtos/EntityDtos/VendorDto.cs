@@ -9,7 +9,7 @@ namespace SolaBid.Business.Dtos.EntityDtos
     {
         public VendorDto()
         {
-            BIDReferances = new HashSet<BIDReferanceDto>();
+            // BIDReferances = new HashSet<BIDReferanceDto>();
             VendorAttachments = new HashSet<VendorAttachmentDto>();
             SendedAttachments = new List<SendedAttachmentDto>();
         }
@@ -50,7 +50,7 @@ namespace SolaBid.Business.Dtos.EntityDtos
         public bool HasSiteLine { get; set; }
         public List<SendedAttachmentDto> SendedAttachments { get; set; }
         public ICollection<VendorAttachmentDto> VendorAttachments { get; set; }
-        public ICollection<BIDReferanceDto> BIDReferances { get; set; }
+        // public ICollection<BIDReferanceDto> BIDReferances { get; set; }
 
     }
 }

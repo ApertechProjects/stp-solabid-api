@@ -6,6 +6,6 @@ namespace SolaBid.Domain.Models.Entities
     {
         public int Id { get; set; }
         public string StatusName { get; set; }
-        public ICollection<BIDReferance>  BIDReferances { get; set; }
+        // public ICollection<BIDReferance>  BIDReferances { get; set; }
     }
 }

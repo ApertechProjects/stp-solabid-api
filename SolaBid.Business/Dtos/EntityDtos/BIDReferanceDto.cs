@@ -69,6 +69,7 @@ namespace SolaBid.Business.Dtos.EntityDtos
         //Relations
         public SiteDto Site { get; set; }
         public int SiteId { get; set; }
+        public string VendorName { get; set; }
         public VendorDto Vendor { get; set; }
         public int VendorId { get; set; }
         public StatusDto Status { get; set; }

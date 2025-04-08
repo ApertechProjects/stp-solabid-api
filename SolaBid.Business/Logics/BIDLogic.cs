@@ -1035,6 +1035,7 @@ namespace SolaBid.Business.Logics
                     bidReferance.Site = TransactionConfig.Mapper.Map<SiteDto>(bidReferance.Site);
                     bidReferance.WonStatus = TransactionConfig.Mapper.Map<WonStatusDto>(bidReferance.WonStatus);
                     bidReferance.Vendor = TransactionConfig.Mapper.Map<VendorDto>(bidReferance.Vendor);
+                    bidReferance.VendorName = bidReferance.Vendor.VendorName;
                     bidReferance.BIDComparison = TransactionConfig.Mapper.Map<BIDComparisonDto>(bidReferance.BIDComparison);
                     bidReferance.RequestNumber = bidReferance.BIDComparison.BIDRequest.RequestNumber;
                 }

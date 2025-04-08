@@ -13,6 +13,7 @@ using SolaBid.WebApi.Models;
 using System;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace SolaBid.WebApi
 {
@@ -44,6 +45,18 @@ namespace SolaBid.WebApi
             // services.AddMvc(options =>
             // {
             //     options.Filters.Add(new ErrorHandlingFilter());
+            // });
+            // services.AddControllers()
+            // .AddNewtonsoftJson(options =>
+            // {
+            //     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            //     options.SerializerSettings.MaxDepth = 3;
+            // });
+            // services.AddControllers()
+            // .AddJsonOptions(options =>
+            // {
+            //     options.JsonSerializerOptions.MaxDepth = 3;
+            //     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             // });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>

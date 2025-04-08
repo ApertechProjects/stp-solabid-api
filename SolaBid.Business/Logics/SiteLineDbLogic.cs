@@ -436,14 +436,15 @@ namespace SolaBid.Business.Logics
         {
             var resultTable = new DataTable();
             var result = string.Empty;
-            if (siteName.Contains("QQZ"))
-            {
-                resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
-            }
-            else
-            {
-                resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
-            }
+            resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}' and site_ref = '{siteName}') and site_ref = '{siteName}' )  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
+            // if (siteName.Contains("QQZ"))
+            // {
+            //     resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse LIKE N'QQZ%'");
+            // }
+            // else
+            // {
+            //     resultTable = FromQuery($"Select whse + ' - ' + (Select name from whse_mst where whse = (Select whse from preq_mst where req_num = '{reqNumber}'))  from preq_mst where req_num = '{reqNumber}' AND whse NOT LIKE N'QQZ%'");
+            // }
             try
             {
                 result = resultTable.Rows[0][0].ToString();
