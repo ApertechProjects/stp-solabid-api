@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.2" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolaBid.Business\SolaBid.Business.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\templates\CarNumberRejected.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\15\c377a-download (4).jfif" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\17\c89f3-download (4).jfif" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\19\0dccd-download (4).jfif" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\22\1878d-download (4).jfif" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\56\2914d-RE_ Local Quality Operation.msg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\79\717ce-WhatsApp Image 2021-05-20 at 10.02.47.jpeg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\102\6eaa8-WhatsApp Image 2021-05-27 at 07.07.49.jpeg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\102\ca950-WhatsApp Image 2021-05-27 at 07.07.48.jpeg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\104\1628f-WhatsApp Image 2021-05-27 at 07.07.47.jpeg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\104\69e7a-sad-converted.pdf" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\266\c8178-assa (1).txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\291\7f91b-ApartmanAz.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\347\db38a-assa (1).txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\372\a0364-781f3ba6-855d-4b3a-9c5f-fd51c144e8ae11-2021-12.jpg" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\452\ef7f4-New Text Document.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\454\d77eb-New Text Document.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\appfiles\BIDDocs\460\4d62a-New Text Document.txt" />
+  </ItemGroup>
+
+</Project>

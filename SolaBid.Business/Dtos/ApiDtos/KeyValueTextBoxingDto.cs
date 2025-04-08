@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SolaBid.Business.Dtos.ApiDtos
+{
+    public class KeyValueTextBoxingDto
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public string Text { get; set; }
+        public bool IsSelected { get; set; }
+    }
+}
