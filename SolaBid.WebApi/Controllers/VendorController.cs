@@ -61,13 +61,14 @@ namespace SolaBid.WebApi.Controllers
         [HttpGet("{vendorId}")]
         public async Task<VendorEditDto> Edit(int vendorId)
         {
+            var site = await new SiteLogic().GetSite(User.FindFirst(ClaimTypes.System)?.Value);
             string host = "https://" + Request.Host.ToString();
             var result = await new VendorLogic().GetVendorEditDatas(
-                await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value),
+                site.SiteDatabase,
                 vendorId,
                 User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 host,
-                User.FindFirst(ClaimTypes.System)?.Value);
+                site.SiteName);
             return result;
         }
 
@@ -102,8 +103,8 @@ namespace SolaBid.WebApi.Controllers
         [HttpGet]
         public async Task<VendorCreateSelectListItemsDto> GetVendorItemList()
         {
-            var result = new VendorLogic().GetVendorItems(await new SiteLogic().GetSiteDatabase(User.FindFirst(ClaimTypes.System)?.Value),
-             User.FindFirst(ClaimTypes.System)?.Value);
+            var site = await new SiteLogic().GetSite(User.FindFirst(ClaimTypes.System)?.Value);
+            var result = new VendorLogic().GetVendorItems(site.SiteDatabase, site.SiteName);
             return result;
         }
         [HttpGet("{currency}")]
