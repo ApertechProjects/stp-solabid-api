@@ -18,9 +18,8 @@ namespace SolaBid.Business.Logics
             var siteListDto = new List<KeyValueTextBoxingDto>();
             using (var context = TransactionConfig.AppDbContext)
             {
-                var siteEntities = await context.Sites.FirstAsync();
-                List<Site> sites = new List<Site>() { siteEntities };
-                siteListDto = TransactionConfig.Mapper.Map<List<KeyValueTextBoxingDto>>(sites);
+                var siteEntities = await context.Sites.ToListAsync();
+                siteListDto = TransactionConfig.Mapper.Map<List<KeyValueTextBoxingDto>>(siteEntities);
             }
 
             return siteListDto;

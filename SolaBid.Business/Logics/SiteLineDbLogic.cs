@@ -38,7 +38,7 @@ namespace SolaBid.Business.Logics
         public List<KeyValueTextBoxingDto> GetCountries(string siteName)
         {
             var countryList = new List<KeyValueTextBoxingDto>();
-            var countryTable = FromQuery($"SELECT country FROM country_mst = '{siteName}'");
+            var countryTable = FromQuery($"SELECT country FROM country_mst where site_ref = '{siteName}'");
             for (int i = 0; i < countryTable.Rows.Count; i++)
             {
                 countryList.Add(new KeyValueTextBoxingDto
