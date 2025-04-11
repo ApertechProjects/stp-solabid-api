@@ -121,7 +121,7 @@ namespace SolaBid.Business.Logics
             try
             {
                 var siteDatabase = await new SiteLogic().GetSiteDatabase(siteId);
-                var siteName = await new SiteLogic().GetSiteDatabase(siteId);
+                var siteName = await new SiteLogic().GetSiteName(siteId);
                 var siteLineVendorCodes = new SiteLineDbLogic(siteDatabase).GetSiteLineVendorCodes(siteName);
                 var vendors = await new VendorLogic().GetVendorsByIds(wonnedVendorIds);
                 using (SqlConnection sqlConn = TransactionConfig.AppDbContextManualConnection)
